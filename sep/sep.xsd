@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="urn:ieee:std:2030.5:ns" targetNamespace="urn:ieee:std:2030.5:ns" elementFormDefault="qualified" attributeFormDefault="unqualified" version="2.1.0">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
   <xs:annotation>
     <xs:documentation>The IEEE 2030.5 model is organized into function sets, represented by sub-packages. However, all structures are defined inside a single namespace.
 

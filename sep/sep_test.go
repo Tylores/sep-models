@@ -17,31 +17,33 @@ func check(ctx string, e error) {
 func stringify(A any) []byte {
 	out, err := xml.MarshalIndent(A, " ", "  ")
 	check("stringify", err)
-	return out
-}
-
-func newValidator() *xsdvalidate.XsdHandler {
-	xsdvalidate.Init()
-	defer xsdvalidate.Cleanup()
-	xsdhandler, err := xsdvalidate.NewXsdHandlerUrl("sep/sep.xsd", xsdvalidate.ParsErrDefault)
-	check("newValidator", err)
-	defer xsdhandler.Free()
-	return xsdhandler
+	b := []byte(Header + string(out))
+	fmt.Println(string(b))
+	return b
 }
 
 func TestDeviceCapabilityXml(t *testing.T) {
-	xsdhandler := newValidator()
-	dcap := &DeviceCapability{
+	xsdvalidate.Init()
+	defer xsdvalidate.Cleanup()
+	xsdhandler, err := xsdvalidate.NewXsdHandlerUrl("sep.xsd", xsdvalidate.ParsErrDefault)
+	check("newValidator", err)
+	defer xsdhandler.Free()
+
+	dcap := DeviceCapability{
 		Href:      "/dcap",
 		Poll_rate: 900,
-		Time: TimeLink{
+		Time: &TimeLink{
 			Href: "/tm",
 		},
-		SelfDevice: SelfDeviceLink{
+		SelfDevice: &SelfDeviceLink{
 			Href: "/sdev",
 		},
-		EndDevices: EndDeviceListLink{
+		EndDevices: &EndDeviceListLink{
 			Href: "/edev",
+			All:  1,
+		},
+		MirrorUsagePoints: &MirrorUsagePointListLink{
+			Href: "/mup",
 			All:  1,
 		},
 	}
