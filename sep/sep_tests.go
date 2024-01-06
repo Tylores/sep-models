@@ -27,7 +27,7 @@ func newValidator() *xsdvalidate.XsdHandler {
 	return xsdhandler
 }
 
-func TestDeviceCapability(t *testing.T) {
+func TestDeviceCapabilityXml(t *testing.T) {
 	xsdhandler := newValidator()
 	dcap := &DeviceCapability{
 		Href:      "/dcap",

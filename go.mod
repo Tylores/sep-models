@@ -1,4 +1,4 @@
-module sep-models
+module github.com/Tylores/sep-models
 
 go 1.21.3
 
