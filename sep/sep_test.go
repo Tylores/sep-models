@@ -2,27 +2,29 @@ package sep
 
 import (
 	"encoding/xml"
+	"fmt"
 	"github.com/terminalstatic/go-xsd-validate"
 	"testing"
 )
 
-func check(e error) {
+func check(ctx string, e error) {
 	if e != nil {
+		fmt.Printf("Error thrown during: %s\n", ctx)
 		panic(e)
 	}
 }
 
 func stringify(A any) []byte {
 	out, err := xml.MarshalIndent(A, " ", "  ")
-	check(err)
+	check("stringify", err)
 	return out
 }
 
 func newValidator() *xsdvalidate.XsdHandler {
 	xsdvalidate.Init()
 	defer xsdvalidate.Cleanup()
-	xsdhandler, err := xsdvalidate.NewXsdHandlerUrl("sep.xsd", xsdvalidate.ParsErrDefault)
-	check(err)
+	xsdhandler, err := xsdvalidate.NewXsdHandlerUrl("sep/sep.xsd", xsdvalidate.ParsErrDefault)
+	check("newValidator", err)
 	defer xsdhandler.Free()
 	return xsdhandler
 }
@@ -45,7 +47,7 @@ func TestDeviceCapabilityXml(t *testing.T) {
 	}
 	dcap_xml := stringify(dcap)
 	xmlhandler, err := xsdvalidate.NewXmlHandlerMem(dcap_xml, xsdvalidate.ParsErrDefault)
-	check(err)
+	check("xmlhandler", err)
 
 	err = xsdhandler.Validate(xmlhandler, xsdvalidate.ValidErrDefault)
 	if err != nil {
