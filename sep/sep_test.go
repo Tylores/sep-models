@@ -17,9 +17,8 @@ func check(ctx string, e error) {
 func stringify(A any) []byte {
 	out, err := xml.MarshalIndent(A, " ", "  ")
 	check("stringify", err)
-	b := []byte(Header + string(out))
-	fmt.Println(string(b))
-	return b
+	fmt.Println(string(out))
+	return out
 }
 
 func TestDeviceCapabilityXml(t *testing.T) {
@@ -30,13 +29,48 @@ func TestDeviceCapabilityXml(t *testing.T) {
 	defer xsdhandler.Free()
 
 	dcap := DeviceCapability{
-		Href:      "/dcap",
-		Poll_rate: 900,
-		Time: &TimeLink{
-			Href: "/tm",
-		},
-		SelfDevice: &SelfDeviceLink{
-			Href: "/sdev",
+		Href:     "/dcap",
+		PollRate: 900,
+		FunctionSetAssignmentsBase: FunctionSetAssignmentsBase{
+			CustomerAccounts: &CustomerAccountListLink{
+				Href: "/ca",
+				All:  1,
+			},
+			DemandResponsePrograms: &DemandResponseProgramListLink{
+				Href: "/dr",
+				All:  1,
+			},
+			DERPrograms: &DERProgramListLink{
+				Href: "/derp",
+				All:  1,
+			},
+			Files: &FileListLink{
+				Href: "/fs",
+				All:  1,
+			},
+			MessagingPrograms: &MessagingProgramListLink{
+				Href: "/msg",
+				All:  1,
+			},
+			Prepayments: &PrepaymentListLink{
+				Href: "/ppy",
+				All:  1,
+			},
+			ResponseSets: &ResponseSetListLink{
+				Href: "/rsps",
+				All:  1,
+			},
+			TariffProfiles: &TariffProfileListLink{
+				Href: "/tp",
+				All:  1,
+			},
+			Time: &TimeLink{
+				Href: "/tm",
+			},
+			UsagePoints: &UsagePointListLink{
+				Href: "/up",
+				All:  1,
+			},
 		},
 		EndDevices: &EndDeviceListLink{
 			Href: "/edev",
@@ -45,6 +79,9 @@ func TestDeviceCapabilityXml(t *testing.T) {
 		MirrorUsagePoints: &MirrorUsagePointListLink{
 			Href: "/mup",
 			All:  1,
+		},
+		SelfDevice: &SelfDeviceLink{
+			Href: "/sdev",
 		},
 	}
 	dcap_xml := stringify(dcap)

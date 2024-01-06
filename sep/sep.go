@@ -15,20 +15,14 @@ const (
 // A EndDeviceListLink is a Link to a List of EndDevice instances
 type EndDeviceListLink struct {
 	XMLName xml.Name `xml:"EndDeviceListLink"`
+	All     uint     `xml:"all,attr"`
 	Href    string   `xml:"href,attr"`
-	All     int      `xml:"all,attr"`
 }
 
 // A MirrorUsagePointListLink is a Link to a List of MirrorUsagePoint instances
 type MirrorUsagePointListLink struct {
 	XMLName xml.Name `xml:"MirrorUsagePointListLink"`
-	Href    string   `xml:"href,attr"`
-	All     int      `xml:"all,attr"`
-}
-
-// A TimeLink is a Link to a Time instance
-type TimeLink struct {
-	XMLName xml.Name `xml:"TimeLink"`
+	All     uint     `xml:"all,attr"`
 	Href    string   `xml:"href,attr"`
 }
 
@@ -41,11 +35,83 @@ type SelfDeviceLink struct {
 // A DeviceCapability is returned by the URI provided by DNS-SD, to allow clients to find the URIs
 // to the resources in which they are interested.
 type DeviceCapability struct {
-	XMLName           xml.Name `xml:"DeviceCapability"`
-	Poll_rate         int      `xml:"pollRate,attr"`
-	Href              string   `xml:"href,attr"`
-	Time              *TimeLink
-	SelfDevice        *SelfDeviceLink
+	XMLName  xml.Name `xml:"DeviceCapability"`
+	Href     string   `xml:"href,attr"`
+	PollRate int      `xml:"pollRate,attr"`
+	FunctionSetAssignmentsBase
 	EndDevices        *EndDeviceListLink
 	MirrorUsagePoints *MirrorUsagePointListLink
+	SelfDevice        *SelfDeviceLink
+}
+
+type CustomerAccountListLink struct {
+	XMLName xml.Name `xml:"CustomerAccountListLink"`
+	All     uint     `xml:"all,attr"`
+	Href    string   `xml:"href,attr"`
+}
+
+type DemandResponseProgramListLink struct {
+	XMLName xml.Name `xml:"DemandResponseProgramListLink"`
+	All     uint     `xml:"all,attr"`
+	Href    string   `xml:"href,attr"`
+}
+
+type DERProgramListLink struct {
+	XMLName xml.Name `xml:"DERProgramListLink"`
+	All     uint     `xml:"all,attr"`
+	Href    string   `xml:"href,attr"`
+}
+
+type FileListLink struct {
+	XMLName xml.Name `xml:"FileListLink"`
+	All     uint     `xml:"all,attr"`
+	Href    string   `xml:"href,attr"`
+}
+
+type MessagingProgramListLink struct {
+	XMLName xml.Name `xml:"MessagingProgramListLink"`
+	All     uint     `xml:"all,attr"`
+	Href    string   `xml:"href,attr"`
+}
+
+type PrepaymentListLink struct {
+	XMLName xml.Name `xml:"PrepaymentListLink"`
+	All     uint     `xml:"all,attr"`
+	Href    string   `xml:"href,attr"`
+}
+
+type ResponseSetListLink struct {
+	XMLName xml.Name `xml:"ResponseSetListLink"`
+	All     uint     `xml:"all,attr"`
+	Href    string   `xml:"href,attr"`
+}
+
+type TariffProfileListLink struct {
+	XMLName xml.Name `xml:"TariffProfileListLink"`
+	All     uint     `xml:"all,attr"`
+	Href    string   `xml:"href,attr"`
+}
+
+type TimeLink struct {
+	XMLName xml.Name `xml:"TimeLink"`
+	Href    string   `xml:"href,attr"`
+}
+
+type UsagePointListLink struct {
+	XMLName xml.Name `xml:"UsagePointListLink"`
+	All     uint     `xml:"all,attr"`
+	Href    string   `xml:"href,attr"`
+}
+
+type FunctionSetAssignmentsBase struct {
+	CustomerAccounts       *CustomerAccountListLink
+	DemandResponsePrograms *DemandResponseProgramListLink
+	DERPrograms            *DERProgramListLink
+	Files                  *FileListLink
+	MessagingPrograms      *MessagingProgramListLink
+	Prepayments            *PrepaymentListLink
+	ResponseSets           *ResponseSetListLink
+	TariffProfiles         *TariffProfileListLink
+	Time                   *TimeLink
+	UsagePoints            *UsagePointListLink
 }
