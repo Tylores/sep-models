@@ -115,3 +115,19 @@ type FunctionSetAssignmentsBase struct {
 	Time                   *TimeLink
 	UsagePoints            *UsagePointListLink
 }
+
+type TimeType int64
+type TimeOffsetType int32
+
+type Time struct {
+	XMLName      xml.Name       `xml:"Time"`
+	Href         string         `xml:"href,attr"`
+	PollRate     int            `xml:"rollRate"`
+	CurrentTime  TimeType       `xml:"currentTime"`
+	DstEndTime   TimeType       `xml:"dstEndTime"`
+	DstOffset    TimeType       `xml:"dstOffset"`
+	DstStartTime TimeType       `xml:"dstStartTime"`
+	LocalTime    TimeType       `xml:"localTime,omitempty"`
+	Quality      uint8          `xml:"quality"`
+	TzOffset     TimeOffsetType `xml:"txOffset"`
+}
