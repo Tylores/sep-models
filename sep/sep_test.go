@@ -21,71 +21,174 @@ func stringify(A any) []byte {
 	return out
 }
 
-func TestDeviceCapabilityXml(t *testing.T) {
+func TestDeviceCapabilityXmlOpt(t *testing.T) {
 	xsdvalidate.Init()
 	defer xsdvalidate.Cleanup()
 	xsdhandler, err := xsdvalidate.NewXsdHandlerUrl("sep.xsd", xsdvalidate.ParsErrDefault)
 	check("newValidator", err)
 	defer xsdhandler.Free()
 
+	dcap := DeviceCapability{}
+	//dcap.Href = "/dcap"
+	//dcap.PollRate = 900
+	dcap.SelfDeviceLink = &SelfDeviceLink{}
+
+	dcap_xml := stringify(dcap)
+	xmlhandler, err := xsdvalidate.NewXmlHandlerMem(dcap_xml, xsdvalidate.ParsErrDefault)
+	check("xmlhandler", err)
+
+	err = xsdhandler.Validate(xmlhandler, xsdvalidate.ValidErrDefault)
+	if err != nil {
+		switch err.(type) {
+		case xsdvalidate.ValidationError:
+			t.Errorf("Validation Error: %v\n", err)
+			t.Errorf("Error in line: %d\n", err.(xsdvalidate.ValidationError).Errors[0].Line)
+			t.Errorf("Message %s\n", err.(xsdvalidate.ValidationError).Errors[0].Message)
+		default:
+			t.Errorf("Error: %v\n", err)
+		}
+	}
+}
+func TestDeviceCapabilityXml(t *testing.T) {
+	xsdvalidate.Init()
+	defer xsdvalidate.Cleanup()
+	xsdhandler, err := xsdvalidate.NewXsdHandlerUrl("sep.xsd", xsdvalidate.ParsErrDefault)
+	check("newValidator", err)
+	defer xsdhandler.Free()
 	dcap := DeviceCapability{
-		Href:     "/dcap",
-		PollRate: 900,
 		FunctionSetAssignmentsBase: FunctionSetAssignmentsBase{
-			CustomerAccounts: &CustomerAccountListLink{
-				Href: "/ca",
-				All:  1,
+			Resource: Resource{
+				Href: "/dcap",
 			},
-			DemandResponsePrograms: &DemandResponseProgramListLink{
-				Href: "/dr",
-				All:  1,
+			CustomerAccountListLink: &CustomerAccountListLink{
+				ListLink: ListLink{
+					Link: Link{
+						Href: "/ca",
+					},
+					All: 1,
+				},
 			},
-			DERPrograms: &DERProgramListLink{
-				Href: "/derp",
-				All:  1,
+			DemandResponseProgramListLink: &DemandResponseProgramListLink{
+				ListLink: ListLink{
+					Link: Link{
+						Href: "/dr",
+					},
+					All: 1,
+				},
 			},
-			Files: &FileListLink{
-				Href: "/fs",
-				All:  1,
+			DERProgramListLink: &DERProgramListLink{
+				ListLink: ListLink{
+					Link: Link{
+						Href: "/derp",
+					},
+					All: 1,
+				},
 			},
-			MessagingPrograms: &MessagingProgramListLink{
-				Href: "/msg",
-				All:  1,
+			FileListLink: &FileListLink{
+				ListLink: ListLink{
+					Link: Link{
+						Href: "/fs",
+					},
+					All: 1,
+				},
 			},
-			Prepayments: &PrepaymentListLink{
-				Href: "/ppy",
-				All:  1,
+			MessagingProgramListLink: &MessagingProgramListLink{
+				ListLink: ListLink{
+					Link: Link{
+						Href: "/msg",
+					},
+					All: 1,
+				},
 			},
-			ResponseSets: &ResponseSetListLink{
-				Href: "/rsps",
-				All:  1,
+			PrepaymentListLink: &PrepaymentListLink{
+				ListLink: ListLink{
+					Link: Link{
+						Href: "/ppy",
+					},
+					All: 1,
+				},
 			},
-			TariffProfiles: &TariffProfileListLink{
-				Href: "/tp",
-				All:  1,
+			ResponseSetListLink: &ResponseSetListLink{
+				ListLink: ListLink{
+					Link: Link{
+						Href: "/rsps",
+					},
+					All: 1,
+				},
 			},
-			Time: &TimeLink{
-				Href: "/tm",
+			TariffProfileListLink: &TariffProfileListLink{
+				ListLink: ListLink{
+					Link: Link{
+						Href: "/tp",
+					},
+					All: 1,
+				},
 			},
-			UsagePoints: &UsagePointListLink{
-				Href: "/up",
-				All:  1,
+			TimeLink: &TimeLink{
+				Link: Link{
+					Href: "/tm",
+				},
+			},
+			UsagePointListLink: &UsagePointListLink{
+				ListLink: ListLink{
+					Link: Link{
+						Href: "/up",
+					},
+					All: 1,
+				},
 			},
 		},
-		EndDevices: &EndDeviceListLink{
-			Href: "/edev",
-			All:  1,
+		PollRate: 900,
+		EndDeviceListLink: &EndDeviceListLink{
+			ListLink: ListLink{
+				Link: Link{
+					Href: "/edev",
+				},
+				All: 1,
+			},
 		},
-		MirrorUsagePoints: &MirrorUsagePointListLink{
-			Href: "/mup",
-			All:  1,
+		MirrorUsagePointListLink: &MirrorUsagePointListLink{
+			ListLink: ListLink{
+				Link: Link{
+					Href: "/mup",
+				},
+				All: 1,
+			},
 		},
-		SelfDevice: &SelfDeviceLink{
-			Href: "/sdev",
+		SelfDeviceLink: &SelfDeviceLink{
+			Link: Link{
+				Href: "/sdev",
+			},
 		},
 	}
 	dcap_xml := stringify(dcap)
 	xmlhandler, err := xsdvalidate.NewXmlHandlerMem(dcap_xml, xsdvalidate.ParsErrDefault)
+	check("xmlhandler", err)
+
+	err = xsdhandler.Validate(xmlhandler, xsdvalidate.ValidErrDefault)
+	if err != nil {
+		switch err.(type) {
+		case xsdvalidate.ValidationError:
+			t.Errorf("Validation Error: %v\n", err)
+			t.Errorf("Error in line: %d\n", err.(xsdvalidate.ValidationError).Errors[0].Line)
+			t.Errorf("Message %s\n", err.(xsdvalidate.ValidationError).Errors[0].Message)
+		default:
+			t.Errorf("Error: %v\n", err)
+		}
+	}
+}
+
+func TestTimeXML(t *testing.T) {
+	xsdvalidate.Init()
+	defer xsdvalidate.Cleanup()
+	xsdhandler, err := xsdvalidate.NewXsdHandlerUrl("sep.xsd", xsdvalidate.ParsErrDefault)
+	check("newValidator", err)
+	defer xsdhandler.Free()
+
+	model := NewTime("/tm")
+
+	xml_str := stringify(model)
+	xmlhandler, err := xsdvalidate.NewXmlHandlerMem(xml_str, xsdvalidate.ParsErrDefault)
 	check("xmlhandler", err)
 
 	err = xsdhandler.Validate(xmlhandler, xsdvalidate.ValidErrDefault)
