@@ -27,6 +27,8 @@ type PINType uint32
 type MRIDType HexBinary128
 type VersionType uint16
 type PowerOfTenMultiplierType int8
+type PowerSourceType uint8
+type PerCent uint16
 
 // Links provide a reference, via URI, to another resource.
 type Link struct {
@@ -87,6 +89,28 @@ type SubscriptionListLink struct{ ListLink }
 type Resource struct {
 	Href string `xml:"href,attr,omitempty"`
 }
+
+// The Response object is the generic response data repository which is extended for specific function sets.
+type Response struct {
+	Resource
+	CreatedDateTime *TimeType    `xml:"createdDateTime,omitempty"`
+	EndDeviceLFDI   HexBinary160 `xml:"endDeviceLFDI"`
+	Status          *uint8       `xml:"status,omitempty"`
+	Subject         MRIDType     `xml:"subject"`
+}
+
+func NewResponse(
+	href string,
+	lfdi HexBinary160,
+	subject MRIDType) *Response {
+	response := Response{}
+	response.Href = href
+	response.EndDeviceLFDI = lfdi
+	response.Subject = subject
+	return &response
+}
+
+type FlowReservationResponseResponse struct{ Response }
 
 // A Resource to which a Subscription can be requested.
 type SubscribableResource struct {
@@ -153,6 +177,79 @@ func NewAbstractDevice(href string, subscribable SubscribableType, sfdi SFDIType
 	adev.Subscribable = subscribable
 	adev.SFDI = sfdi
 	return &adev
+}
+
+// Real electrical energy
+type RealEnergy struct {
+	Multiplier PowerOfTenMultiplierType `xml:"multiplier"`
+	Value      uint64                   `xml:"value"`
+}
+
+func NewRealEnergy(scale PowerOfTenMultiplierType, value uint64) *RealEnergy {
+	energy := RealEnergy{
+		Multiplier: scale,
+		Value:      value,
+	}
+	return &energy
+}
+
+// Contains attributes that can be exposed by PEVs and other devices that have charging requirements.
+type PEVInfo struct {
+	ChargingPowerNow        ActivePower `xml:"chargingPowerNow"`
+	EnergyRequestNow        RealEnergy  `xml:"energyRequestNow"`
+	MaxForwardPower         ActivePower `xml:"maxForwardPower"`
+	MinimumChargingDuration uint32      `xml:"minimumChargingDuration"`
+	TargetStateOfCharge     PerCent     `xml:"targetStateOfCharge"`
+	TimeChargeIsNeeded      TimeType    `xml:"timeChargeIsNeeded"`
+	TimeChargingStatusPEV   TimeType    `xml:"timeChargingStatusPEV"`
+}
+
+func NewPEVInfo(
+	power ActivePower,
+	energy RealEnergy,
+	max_power ActivePower,
+	duration uint32,
+	soc PerCent,
+	needed TimeType,
+	status TimeType) *PEVInfo {
+	info := PEVInfo{
+		ChargingPowerNow:        power,
+		EnergyRequestNow:        energy,
+		MaxForwardPower:         max_power,
+		MinimumChargingDuration: duration,
+		TargetStateOfCharge:     soc,
+		TimeChargeIsNeeded:      needed,
+		TimeChargingStatusPEV:   status,
+	}
+	return &info
+}
+
+// Contains the status of the device's power sources
+type PowerStatus struct {
+	Resource
+	BatteryStatus            uint8           `xml:"batteryStatus"`
+	ChangedTime              TimeType        `xml:"changedTime"`
+	CurrentPowerSource       PowerSourceType `xml:"currentPowerSource"`
+	EstimatedChargeRemaining *PerCent        `xml:"estimatedChargeRemaining,omitempty"`
+	EstimatedTimeRemaining   *uint32         `xml:"estimatedTimeRemaining,omitempty"`
+	PEVInfo                  *PEVInfo        `xml:"PEVInfo,omitempty"`
+	SessionTimeOnBattery     *uint32         `xml:"sessionTimeOnBattery,omitempty"`
+	TotalTimeOnBattery       *uint32         `xml:"totalTimeOnBattery,omitempty"`
+	PollRate                 uint32          `xml:"pollRate,attr"`
+}
+
+func NewPowerStatus(
+	href string,
+	status uint8,
+	changed TimeType,
+	source PowerSourceType) *PowerStatus {
+	ps := PowerStatus{}
+	ps.Href = href
+	ps.BatteryStatus = status
+	ps.ChangedTime = changed
+	ps.CurrentPowerSource = source
+	ps.PollRate = 900
+	return &ps
 }
 
 // Asset container that performs one or more end device functions. Contains information

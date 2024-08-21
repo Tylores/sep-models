@@ -264,3 +264,56 @@ func TestFlowReservationResponseXML(t *testing.T) {
 	xml = stringify(&obj)
 	Validate(xml, t)
 }
+
+func TestResponseXMLOpt(t *testing.T) {
+	mrid_bs := []byte("aaaaabbbbbcccccdddddeeeeefffff11")
+	mrid := MRIDType(mrid_bs)
+
+	lfdi_bs := []byte("aaaaabbbbbcccccdddddeeeeefffff1111122222")
+	lfdi := HexBinary160(lfdi_bs)
+
+	obj := NewResponse("/rsps", lfdi, mrid)
+	xml := stringify(&obj)
+	Validate(xml, t)
+}
+
+func TestResponseXML(t *testing.T) {
+	mrid_bs := []byte("aaaaabbbbbcccccdddddeeeeefffff11")
+	mrid := MRIDType(mrid_bs)
+
+	lfdi_bs := []byte("aaaaabbbbbcccccdddddeeeeefffff1111122222")
+	lfdi := HexBinary160(lfdi_bs)
+
+	obj := NewResponse("/rsps", lfdi, mrid)
+	var created TimeType = 12345
+	obj.CreatedDateTime = &created
+	var status uint8 = 1
+	obj.Status = &status
+	xml := stringify(&obj)
+	Validate(xml, t)
+}
+
+func TestPowerStatusXMLOpt(t *testing.T) {
+	obj := NewPowerStatus("/rsps", 1, 12345, 1)
+	xml := stringify(&obj)
+	Validate(xml, t)
+}
+
+func TestPowerStatusXML(t *testing.T) {
+	power := NewActivePower(1, 100)
+	max_power := NewActivePower(1, 150)
+	energy := NewRealEnergy(1, 1000)
+	info := NewPEVInfo(*power, *energy, *max_power, 50, 9000, 23456, 12345)
+	obj := NewPowerStatus("/rsps", 1, 12345, 1)
+	var charge_remaining PerCent = 10
+	obj.EstimatedChargeRemaining = &charge_remaining
+	var time_remaining uint32 = 123
+	obj.EstimatedTimeRemaining = &time_remaining
+	obj.PEVInfo = info
+	var session_time uint32 = 12
+	obj.SessionTimeOnBattery = &session_time
+	var total_time uint32 = 1
+	obj.TotalTimeOnBattery = &total_time
+	xml := stringify(&obj)
+	Validate(xml, t)
+}
