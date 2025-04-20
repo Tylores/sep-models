@@ -1,3 +1,3 @@
-module sep-models
+module sep
 
 go 1.23.0
